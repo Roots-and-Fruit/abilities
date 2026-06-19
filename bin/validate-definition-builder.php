@@ -2,7 +2,7 @@
 <?php
 /**
  * CLI validation for RF_Ability_Definition (gate 1.2).
- * Run: php tools/wordpress/rootsandfruit-abilities/bin/validate-definition-builder.php
+ * Run: php ../abilities/bin/validate-definition-builder.php
  */
 
 declare(strict_types=1);

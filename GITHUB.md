@@ -42,10 +42,14 @@ Release zip asset name should match Git Updater convention: `abilities-*.zip` (e
 2. Commit and push to `main`.
 3. Create GitHub release tag `v1.4.0` with attached zip built from plugin root.
 
-## Client repo mirror
+## Local dev layout
 
-Development copy also lives at:
+Clone beside the Cursor **agent** repo:
 
-`CLIENTS/rootsandfruit-as-client/tools/wordpress/rootsandfruit-abilities/`
+```
+rootsandfruit-as-client/
+├── agent/       ← Cursor MCP ops (github.com/Roots-and-Fruit/agent)
+└── abilities/   ← this repo
+```
 
-Sync changes to the GitHub repo before tagging releases.
+Open `rootsandfruit.code-workspace` in Cursor for both folders. Sync changes here before tagging releases.
