@@ -44,6 +44,36 @@ final class RF_Permissions {
 	}
 
 	/**
+	 * @param mixed $input Ability input.
+	 */
+	public static function can_set_post_author( $input = null ): bool {
+		if ( ! is_array( $input ) || ! isset( $input['post_id'], $input['author'] ) ) {
+			return false;
+		}
+
+		$post_id = (int) $input['post_id'];
+		if ( $post_id <= 0 || ! current_user_can( 'edit_post', $post_id ) ) {
+			return false;
+		}
+
+		$author_id = self::resolve_author_id_from_input( $input['author'] );
+		if ( $author_id <= 0 ) {
+			return false;
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+
+		if ( (int) $post->post_author === $author_id ) {
+			return true;
+		}
+
+		return current_user_can( 'edit_others_posts' );
+	}
+
+	/**
 	 * FluentSnippets mutating operations require unfiltered_html (matches FluentSnippets REST).
 	 */
 	public static function can_manage_snippets( $input = null ): bool {
@@ -63,5 +93,32 @@ final class RF_Permissions {
 		}
 
 		return (int) $input['post_id'];
+	}
+
+	/**
+	 * @param mixed $author User ID or login string.
+	 */
+	private static function resolve_author_id_from_input( $author ): int {
+		if ( is_int( $author ) ) {
+			return $author > 0 ? $author : 0;
+		}
+
+		if ( is_string( $author ) && ctype_digit( $author ) ) {
+			return (int) $author;
+		}
+
+		if ( is_string( $author ) && '' !== $author ) {
+			$user = get_user_by( 'login', $author );
+			if ( $user instanceof WP_User ) {
+				return (int) $user->ID;
+			}
+
+			$user = get_user_by( 'slug', $author );
+			if ( $user instanceof WP_User ) {
+				return (int) $user->ID;
+			}
+		}
+
+		return 0;
 	}
 }

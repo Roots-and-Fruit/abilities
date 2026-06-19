@@ -110,6 +110,44 @@ final class RF_Schemas {
 		);
 	}
 
+	public static function set_post_author_input(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'post_id' => array(
+					'type'        => 'integer',
+					'description' => 'WordPress post ID.',
+					'minimum'     => 1,
+				),
+				'author'  => array(
+					'description' => 'Target author user ID (integer) or login (string).',
+					'oneOf'       => array(
+						array( 'type' => 'integer', 'minimum' => 1 ),
+						array( 'type' => 'string', 'minLength' => 1 ),
+					),
+				),
+			),
+			'required'   => array( 'post_id', 'author' ),
+		);
+	}
+
+	public static function set_post_author_output(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'post_id'               => array( 'type' => 'integer' ),
+				'status'                => array( 'type' => 'string' ),
+				'title'                 => array( 'type' => 'string' ),
+				'edit_url'              => array( 'type' => 'string' ),
+				'link'                  => array( 'type' => 'string' ),
+				'author_id'             => array( 'type' => 'integer' ),
+				'author_login'          => array( 'type' => 'string' ),
+				'breeze_purge_reminder' => array( 'type' => 'boolean' ),
+			),
+			'required'   => array( 'post_id', 'status', 'title', 'edit_url', 'author_id', 'author_login', 'breeze_purge_reminder' ),
+		);
+	}
+
 	public static function post_list_output(): array {
 		return array(
 			'type'       => 'object',

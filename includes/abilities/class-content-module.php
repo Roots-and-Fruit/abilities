@@ -82,6 +82,17 @@ final class RF_Content_Module implements RF_Ability_Module {
 				->mcp_public( true )
 				->annotations( RF_Annotations::publish() )
 				->build(),
+			RF_Ability_Definition::make( 'rootsandfruit/set-post-author' )
+				->label( __( 'Set post author', 'rootsandfruit-abilities' ) )
+				->description( __( 'Assigns a post to a WordPress user by ID or login. Purge Breeze cache before logged-out preview after byline changes.', 'rootsandfruit-abilities' ) )
+				->category( $this->category_slug() )
+				->input( RF_Schemas::set_post_author_input() )
+				->output( RF_Schemas::set_post_author_output() )
+				->execute( array( self::class, 'set_post_author' ) )
+				->permission( array( RF_Permissions::class, 'can_set_post_author' ) )
+				->mcp_public( true )
+				->annotations( RF_Annotations::write_safe() )
+				->build(),
 		);
 	}
 
@@ -235,6 +246,83 @@ final class RF_Content_Module implements RF_Ability_Module {
 		}
 
 		return self::format_post_summary( $published );
+	}
+
+	/**
+	 * @param array<string, mixed> $input
+	 * @return array<string, mixed>|WP_Error
+	 */
+	public static function set_post_author( array $input ) {
+		$post_id = (int) $input['post_id'];
+		$post    = get_post( $post_id );
+		if ( ! $post instanceof WP_Post ) {
+			return RF_Errors::post_not_found( $post_id );
+		}
+
+		if ( ! isset( $input['author'] ) ) {
+			return RF_Errors::invalid_input( 'Author is required (user ID or login).' );
+		}
+
+		$author_id = self::resolve_author_id( $input['author'] );
+		if ( $author_id <= 0 ) {
+			return RF_Errors::invalid_input( 'Invalid author. Provide a valid user ID or login.' );
+		}
+
+		$user = get_user_by( 'id', $author_id );
+		if ( ! $user instanceof WP_User ) {
+			return RF_Errors::invalid_input( 'Author user not found.' );
+		}
+
+		$result = wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_author' => $author_id,
+			),
+			true
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$updated = get_post( $post_id );
+		if ( ! $updated instanceof WP_Post ) {
+			return RF_Errors::post_not_found( $post_id );
+		}
+
+		$summary                      = self::format_post_summary( $updated );
+		$summary['author_id']         = $author_id;
+		$summary['author_login']      = (string) $user->user_login;
+		$summary['breeze_purge_reminder'] = true;
+
+		return $summary;
+	}
+
+	/**
+	 * @param mixed $author User ID or login string.
+	 */
+	private static function resolve_author_id( $author ): int {
+		if ( is_int( $author ) ) {
+			return $author > 0 ? $author : 0;
+		}
+
+		if ( is_string( $author ) && ctype_digit( $author ) ) {
+			return (int) $author;
+		}
+
+		if ( is_string( $author ) && '' !== $author ) {
+			$user = get_user_by( 'login', $author );
+			if ( $user instanceof WP_User ) {
+				return (int) $user->ID;
+			}
+
+			$user = get_user_by( 'slug', $author );
+			if ( $user instanceof WP_User ) {
+				return (int) $user->ID;
+			}
+		}
+
+		return 0;
 	}
 
 	/**

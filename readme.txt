@@ -4,7 +4,7 @@ Tags: abilities, mcp, ai, agents, blocks
 Requires at least: 6.9
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,7 @@ Provides a consistent, least-privilege ability surface for Cursor agents via MCP
 * rootsandfruit/create-draft
 * rootsandfruit/update-post
 * rootsandfruit/publish-post
+* rootsandfruit/set-post-author
 
 When Block MCP (gk-block-mcp) is active:
 
@@ -97,6 +98,10 @@ Recommended custom role caps:
 5. Run audit-mcp-abilities.ps1 from the rootsandfruit-as-client repo
 
 == Changelog ==
+
+= 1.5.0 =
+* Add rootsandfruit/set-post-author for MCP article publish workflow (user ID or login).
+* Returns breeze_purge_reminder after byline changes.
 
 = 1.4.0 =
 * Block MCP bridge: six rootsandfruit/blocks-* abilities when gk-block-mcp is active.
