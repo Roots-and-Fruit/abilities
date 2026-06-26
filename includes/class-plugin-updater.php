@@ -45,14 +45,12 @@ final class RF_Plugin_Updater {
 			return $api;
 		}
 
-		$versions = isset( $api->versions ) && is_object( $api->versions )
-			? (array) $api->versions
-			: array();
+		$versions = self::versions_map_from_api( $api );
 
 		if ( empty( $versions ) ) {
 			return RF_Errors::plugin_update_failed(
 				sprintf(
-					'WordPress.org returned no versions for "%s". Check outbound HTTP access to api.wordpress.org.',
+					'WordPress.org returned no version map for "%s". plugins_api response may be missing or malformed.',
 					$slug
 				)
 			);
@@ -175,6 +173,27 @@ final class RF_Plugin_Updater {
 		}
 
 		return RF_Errors::plugin_not_installed( $slug );
+	}
+
+	/**
+	 * plugins_api() casts the top-level response to object; nested `versions` stays an array.
+	 *
+	 * @return array<string, string>
+	 */
+	private static function versions_map_from_api( object $api ): array {
+		if ( ! isset( $api->versions ) ) {
+			return array();
+		}
+
+		if ( is_array( $api->versions ) ) {
+			return $api->versions;
+		}
+
+		if ( is_object( $api->versions ) ) {
+			return (array) $api->versions;
+		}
+
+		return array();
 	}
 
 	private static function load_upgrader_dependencies(): void {
