@@ -87,6 +87,22 @@ final class RF_Permissions {
 	/**
 	 * @param mixed $input Ability input.
 	 */
+	public static function can_purge_breeze_cache( $input = null ): bool {
+		if ( ! is_array( $input ) || ! isset( $input['post_id'] ) ) {
+			return current_user_can( 'edit_posts' );
+		}
+
+		$post_id = (int) $input['post_id'];
+		if ( $post_id <= 0 ) {
+			return current_user_can( 'edit_posts' );
+		}
+
+		return current_user_can( 'edit_post', $post_id );
+	}
+
+	/**
+	 * @param mixed $input Ability input.
+	 */
 	private static function extract_post_id( $input ): int {
 		if ( ! is_array( $input ) || ! isset( $input['post_id'] ) ) {
 			return 0;

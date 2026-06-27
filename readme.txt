@@ -4,7 +4,7 @@ Tags: abilities, mcp, ai, agents, blocks
 Requires at least: 6.9
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,7 @@ Provides a consistent, least-privilege ability surface for Cursor agents via MCP
 == Ability catalog ==
 
 * rootsandfruit/ping
+* rootsandfruit/purge-breeze-cache
 * rootsandfruit/enable-public-preview
 * rootsandfruit/get-public-preview-url
 * rootsandfruit/list-posts
@@ -98,6 +99,10 @@ Recommended custom role caps:
 5. Run audit-mcp-abilities.ps1 from the rootsandfruit-as-client repo
 
 == Changelog ==
+
+= 1.5.3 =
+* Add rootsandfruit/purge-breeze-cache (server-side Breeze purge; optional post_id).
+* set-post-author: optional purge_breeze; breeze_purge_command in response; ping reports breeze_active.
 
 = 1.5.2 =
 * Fix plugin-update-safe: accept array-shaped `versions` from plugins_api (WordPress.org updates no longer fail with a false outbound-HTTP error).

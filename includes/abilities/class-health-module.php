@@ -22,7 +22,7 @@ final class RF_Health_Module implements RF_Ability_Module {
 	}
 
 	public function category_description(): string {
-		return __( 'Read-only site diagnostics for Roots & Fruit agents.', 'rootsandfruit-abilities' );
+		return __( 'Site diagnostics and Breeze cache utilities for Roots & Fruit agents.', 'rootsandfruit-abilities' );
 	}
 
 	public function definitions(): array {
@@ -37,6 +37,17 @@ final class RF_Health_Module implements RF_Ability_Module {
 				->mcp_public( true )
 				->annotations( RF_Annotations::read_only() )
 				->build(),
+			RF_Ability_Definition::make( 'rootsandfruit/purge-breeze-cache' )
+				->label( __( 'Purge Breeze cache', 'rootsandfruit-abilities' ) )
+				->description( __( 'Clears Breeze page cache on the server. Prefer this over agent-side REST when available. Optional post_id for per-post purge.', 'rootsandfruit-abilities' ) )
+				->category( $this->category_slug() )
+				->input( RF_Schemas::purge_breeze_cache_input() )
+				->output( RF_Schemas::purge_breeze_cache_output() )
+				->execute( array( self::class, 'purge_breeze_cache' ) )
+				->permission( array( RF_Permissions::class, 'can_purge_breeze_cache' ) )
+				->mcp_public( true )
+				->annotations( RF_Annotations::write_safe() )
+				->build(),
 		);
 	}
 
@@ -49,6 +60,24 @@ final class RF_Health_Module implements RF_Ability_Module {
 			'ok'               => true,
 			'plugin_version'   => RF_ABILITIES_VERSION,
 			'block_mcp_active' => RF_Block_Mcp::is_available(),
+			'breeze_active'    => RF_Breeze::is_available(),
 		);
+	}
+
+	/**
+	 * @param array<string, mixed> $input
+	 * @return array<string, mixed>|WP_Error
+	 */
+	public static function purge_breeze_cache( array $input = array() ) {
+		if ( ! RF_Breeze::is_available() ) {
+			return RF_Errors::breeze_unavailable();
+		}
+
+		$post_id = isset( $input['post_id'] ) ? (int) $input['post_id'] : 0;
+		if ( $post_id > 0 ) {
+			return RF_Breeze::purge_post( $post_id );
+		}
+
+		return RF_Breeze::purge_all();
 	}
 }

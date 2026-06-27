@@ -293,7 +293,18 @@ final class RF_Content_Module implements RF_Ability_Module {
 		$summary                      = self::format_post_summary( $updated );
 		$summary['author_id']         = $author_id;
 		$summary['author_login']      = (string) $user->user_login;
+		$summary['breeze_purge_command'] = '.\\tools\\scripts\\purge-breeze-cache.ps1';
+		$purge_breeze                 = ! empty( $input['purge_breeze'] );
+		$summary['breeze_purged']     = false;
 		$summary['breeze_purge_reminder'] = true;
+
+		if ( $purge_breeze && RF_Breeze::is_available() ) {
+			$purge_result = RF_Breeze::purge_post( $post_id );
+			if ( is_array( $purge_result ) && ! empty( $purge_result['ok'] ) ) {
+				$summary['breeze_purged']         = true;
+				$summary['breeze_purge_reminder'] = false;
+			}
+		}
 
 		return $summary;
 	}

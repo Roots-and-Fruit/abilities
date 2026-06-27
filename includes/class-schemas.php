@@ -114,17 +114,22 @@ final class RF_Schemas {
 		return array(
 			'type'       => 'object',
 			'properties' => array(
-				'post_id' => array(
+				'post_id'      => array(
 					'type'        => 'integer',
 					'description' => 'WordPress post ID.',
 					'minimum'     => 1,
 				),
-				'author'  => array(
+				'author'       => array(
 					'description' => 'Target author user ID (integer) or login (string).',
 					'oneOf'       => array(
 						array( 'type' => 'integer', 'minimum' => 1 ),
 						array( 'type' => 'string', 'minLength' => 1 ),
 					),
+				),
+				'purge_breeze' => array(
+					'type'        => 'boolean',
+					'description' => 'When true, purge Breeze cache on the server after author change.',
+					'default'     => false,
 				),
 			),
 			'required'   => array( 'post_id', 'author' ),
@@ -143,8 +148,42 @@ final class RF_Schemas {
 				'author_id'             => array( 'type' => 'integer' ),
 				'author_login'          => array( 'type' => 'string' ),
 				'breeze_purge_reminder' => array( 'type' => 'boolean' ),
+				'breeze_purged'         => array( 'type' => 'boolean' ),
+				'breeze_purge_command'  => array(
+					'type'        => 'string',
+					'description' => 'Agent-side purge script when breeze_purged is false.',
+				),
 			),
 			'required'   => array( 'post_id', 'status', 'title', 'edit_url', 'author_id', 'author_login', 'breeze_purge_reminder' ),
+		);
+	}
+
+	public static function purge_breeze_cache_input(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'post_id' => array(
+					'type'        => 'integer',
+					'description' => 'Optional post ID for per-post purge (Breeze 2.4+). Omit to clear all cache.',
+					'minimum'     => 1,
+				),
+			),
+		);
+	}
+
+	public static function purge_breeze_cache_output(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'ok'      => array( 'type' => 'boolean' ),
+				'message' => array( 'type' => 'string' ),
+				'scope'   => array(
+					'type' => 'string',
+					'enum' => array( 'all', 'post' ),
+				),
+				'post_id' => array( 'type' => 'integer' ),
+			),
+			'required'   => array( 'ok', 'message', 'scope' ),
 		);
 	}
 
@@ -180,6 +219,7 @@ final class RF_Schemas {
 				'ok'               => array( 'type' => 'boolean' ),
 				'plugin_version'   => array( 'type' => 'string' ),
 				'block_mcp_active' => array( 'type' => 'boolean' ),
+				'breeze_active'    => array( 'type' => 'boolean' ),
 			),
 			'required'   => array( 'ok', 'plugin_version' ),
 		);
