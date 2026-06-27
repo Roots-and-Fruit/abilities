@@ -484,6 +484,55 @@ final class RF_Schemas {
 		);
 	}
 
+	public static function plugin_update_git_safe_input(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'slug' => array(
+					'type'        => 'string',
+					'description' => 'Plugin directory slug under wp-content/plugins (e.g. rootsandfruit-abilities).',
+					'minLength'   => 1,
+				),
+				'git_slug' => array(
+					'type'        => 'string',
+					'description' => 'Optional Git Updater repository slug when it differs from the directory slug (e.g. abilities).',
+				),
+				'target_version' => array(
+					'type'        => 'string',
+					'description' => 'Optional release tag or version (e.g. 1.5.3 or v1.5.3). Omit for latest from update-api.',
+				),
+				'refresh_cache' => array(
+					'type'        => 'boolean',
+					'description' => 'Flush Git Updater repo cache, refresh transients, and nudge wp-cron before update (default true).',
+					'default'     => true,
+				),
+				'force_override' => array(
+					'type'        => 'boolean',
+					'description' => 'Pass override=1 when no target_version (required for release-asset plugins on main). Default true.',
+					'default'     => true,
+				),
+				'rollback_on_failure' => array(
+					'type'        => 'boolean',
+					'description' => 'Rollback to pre-update version if smoke test fails (default true).',
+					'default'     => true,
+				),
+				'purge_breeze' => array(
+					'type'        => 'boolean',
+					'description' => 'Purge Breeze cache after successful update (default true).',
+					'default'     => true,
+				),
+			),
+			'required'   => array( 'slug' ),
+		);
+	}
+
+	public static function plugin_update_git_safe_output(): array {
+		$output = self::plugin_update_safe_output();
+		$output['properties']['git_slug'] = array( 'type' => 'string' );
+
+		return $output;
+	}
+
 	public static function blocks_get_page_input(): array {
 		return array(
 			'type'       => 'object',

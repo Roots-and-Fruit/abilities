@@ -4,7 +4,7 @@ Tags: abilities, mcp, ai, agents, blocks
 Requires at least: 6.9
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,7 @@ When FluentSnippets is active:
 When WP Rollback is active:
 
 * rootsandfruit/plugin-update-safe
+* rootsandfruit/plugin-update-git-safe (when Git Updater is active)
 
 == Dependencies ==
 
@@ -99,6 +100,10 @@ Recommended custom role caps:
 5. Run audit-mcp-abilities.ps1 from the rootsandfruit-as-client repo
 
 == Changelog ==
+
+= 1.5.4 =
+* Add rootsandfruit/plugin-update-git-safe: flush Git Updater cache, nudge wp-cron, update-api, install with tag/override, smoke test, Breeze purge, rollback on failure.
+* Resolves Git Updater slug vs plugin directory slug (e.g. abilities vs rootsandfruit-abilities).
 
 = 1.5.3 =
 * Add rootsandfruit/purge-breeze-cache (server-side Breeze purge; optional post_id).

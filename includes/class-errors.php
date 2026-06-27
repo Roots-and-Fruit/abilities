@@ -53,6 +53,14 @@ final class RF_Errors {
 		);
 	}
 
+	public static function git_updater_unavailable( string $message = 'Git Updater is not active or not configured.' ): WP_Error {
+		return new WP_Error(
+			'rf_git_updater_unavailable',
+			$message,
+			array( 'status' => 503 )
+		);
+	}
+
 	public static function snippet_not_found( string $file_name ): WP_Error {
 		return self::not_found( sprintf( 'Snippet "%s" not found.', $file_name ) );
 	}
