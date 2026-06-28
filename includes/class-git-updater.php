@@ -176,7 +176,9 @@ final class RF_Git_Updater {
 		$tag = trim( $tag );
 		if ( '' !== $tag ) {
 			$params['tag'] = self::normalize_tag( $tag );
-		} elseif ( $force_override ) {
+		}
+
+		if ( $force_override ) {
 			$params['override'] = '1';
 		}
 
