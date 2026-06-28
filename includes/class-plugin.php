@@ -30,9 +30,12 @@ final class RF_Plugin {
 	}
 
 	public function boot(): void {
+		RF_Capabilities::ensure_caps();
+
 		add_action( 'wp_abilities_api_categories_init', array( RF_Agent_Abilities::class, 'register_category' ) );
 
 		$this->registry->add_module( new RF_Health_Module() );
+		$this->registry->add_module( new RF_Robots_Llms_Module() );
 		if ( class_exists( 'DS_Public_Post_Preview' ) ) {
 			$this->registry->add_module( new RF_Preview_Module() );
 		}

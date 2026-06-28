@@ -21,6 +21,10 @@ final class RF_Errors {
 		return new WP_Error( 'rf_forbidden', $message, array( 'status' => 403 ) );
 	}
 
+	public static function conflict( string $message ): WP_Error {
+		return new WP_Error( 'rf_conflict', $message, array( 'status' => 409 ) );
+	}
+
 	public static function invalid_input( string $message ): WP_Error {
 		return new WP_Error( 'rf_invalid_input', $message, array( 'status' => 400 ) );
 	}

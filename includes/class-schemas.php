@@ -216,10 +216,12 @@ final class RF_Schemas {
 		return array(
 			'type'       => 'object',
 			'properties' => array(
-				'ok'               => array( 'type' => 'boolean' ),
-				'plugin_version'   => array( 'type' => 'string' ),
-				'block_mcp_active' => array( 'type' => 'boolean' ),
-				'breeze_active'    => array( 'type' => 'boolean' ),
+				'ok'                         => array( 'type' => 'boolean' ),
+				'plugin_version'             => array( 'type' => 'string' ),
+				'block_mcp_active'           => array( 'type' => 'boolean' ),
+				'breeze_active'              => array( 'type' => 'boolean' ),
+				'robots_llms_txt_writable'   => array( 'type' => 'boolean' ),
+				'robots_llms_txt_capability' => array( 'type' => 'string' ),
 			),
 			'required'   => array( 'ok', 'plugin_version' ),
 		);
@@ -672,6 +674,97 @@ final class RF_Schemas {
 			'properties' => array(
 				'revision_id' => array( 'type' => 'integer' ),
 			),
+		);
+	}
+
+	public static function robots_llms_file_input(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'file' => array(
+					'type'        => 'string',
+					'description' => 'Which document-root file to read or update.',
+					'enum'        => array( 'robots', 'llms', 'llms-full' ),
+				),
+			),
+			'required'   => array( 'file' ),
+		);
+	}
+
+	public static function robots_llms_get_output(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'file'         => array( 'type' => 'string' ),
+				'basename'     => array( 'type' => 'string' ),
+				'url'          => array( 'type' => 'string' ),
+				'content'      => array( 'type' => 'string' ),
+				'bytes'        => array( 'type' => 'integer' ),
+				'sha256'       => array( 'type' => 'string' ),
+				'modified_utc' => array( 'type' => 'string' ),
+			),
+			'required'   => array( 'file', 'basename', 'url', 'content', 'bytes', 'sha256' ),
+		);
+	}
+
+	public static function robots_llms_update_input(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'file' => array(
+					'type'        => 'string',
+					'description' => 'Which document-root file to update.',
+					'enum'        => array( 'robots', 'llms', 'llms-full' ),
+				),
+				'content' => array(
+					'type'        => 'string',
+					'description' => 'Full replacement file body (non-empty).',
+					'minLength'   => 1,
+				),
+				'expected_sha256' => array(
+					'type'        => 'string',
+					'description' => 'SHA-256 of the file on disk from get-robots-llms-txt (optimistic concurrency).',
+					'pattern'     => '^[a-f0-9]{64}$',
+				),
+				'dry_run' => array(
+					'type'        => 'boolean',
+					'description' => 'When true, validate only; do not write.',
+					'default'     => false,
+				),
+				'rollback_on_failure' => array(
+					'type'        => 'boolean',
+					'description' => 'Restore from .bak when post-write verification fails.',
+					'default'     => true,
+				),
+				'purge_breeze' => array(
+					'type'        => 'boolean',
+					'description' => 'Purge Breeze cache after a successful verified write.',
+					'default'     => false,
+				),
+			),
+			'required'   => array( 'file', 'content', 'expected_sha256' ),
+		);
+	}
+
+	public static function robots_llms_update_output(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'ok'            => array( 'type' => 'boolean' ),
+				'dry_run'       => array( 'type' => 'boolean' ),
+				'file'          => array( 'type' => 'string' ),
+				'basename'      => array( 'type' => 'string' ),
+				'url'           => array( 'type' => 'string' ),
+				'bytes_before'  => array( 'type' => 'integer' ),
+				'bytes_after'   => array( 'type' => 'integer' ),
+				'sha256_before' => array( 'type' => 'string' ),
+				'sha256_after'  => array( 'type' => 'string' ),
+				'verified'      => array( 'type' => 'boolean' ),
+				'backup_path'   => array( 'type' => 'string' ),
+				'purge_breeze'  => array( 'type' => 'object' ),
+				'message'       => array( 'type' => 'string' ),
+			),
+			'required'   => array( 'ok', 'file', 'message' ),
 		);
 	}
 }

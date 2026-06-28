@@ -4,7 +4,7 @@ Tags: abilities, mcp, ai, agents, blocks
 Requires at least: 6.9
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.5.4
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,6 +18,8 @@ Provides a consistent, least-privilege ability surface for Cursor agents via MCP
 
 * rootsandfruit/ping
 * rootsandfruit/purge-breeze-cache
+* rootsandfruit/get-robots-llms-txt
+* rootsandfruit/update-robots-llms-txt
 * rootsandfruit/enable-public-preview
 * rootsandfruit/get-public-preview-url
 * rootsandfruit/list-posts
@@ -83,13 +85,26 @@ Requires `update_plugins` (admin MCP user, not the content agent role).
 
 Snippet management requires `unfiltered_html` (typically administrator).
 
+== robots.txt / llms.txt updates ==
+
+Requires custom capability `update_robots_llms_txt` (granted to Administrator on activate/upgrade).
+
+1. `rootsandfruit/get-robots-llms-txt` with `file`: `robots`, `llms`, or `llms-full` — returns `content` and `sha256`.
+2. Edit locally (see agent repo `content/discovery/`).
+3. `rootsandfruit/update-robots-llms-txt` with `content`, `expected_sha256` from step 1, optional `dry_run`, `purge_breeze`.
+4. Update-only: files must exist at the document root; no create or delete via MCP.
+
+Disable writes in wp-config: `define( 'RF_ROBOTS_LLMS_TXT_WRITABLE', false );`
+
+Use an administrator Application Password — not the content agent role (unless you explicitly grant `update_robots_llms_txt`).
+
 == Agent role capabilities ==
 
 Recommended custom role caps:
 
 * read, edit_posts, publish_posts, upload_files
 * edit_published_posts, edit_others_posts (if editing existing content)
-* No delete_*, manage_options, or plugin caps
+* No delete_*, manage_options, update_robots_llms_txt, or plugin caps
 
 == Installation ==
 
@@ -100,6 +115,11 @@ Recommended custom role caps:
 5. Run audit-mcp-abilities.ps1 from the rootsandfruit-as-client repo
 
 == Changelog ==
+
+= 1.6.0 =
+* Add `update_robots_llms_txt` capability (Administrator on activate/upgrade).
+* Add rootsandfruit/get-robots-llms-txt and update-robots-llms-txt for robots.txt, llms.txt, llms-full.txt (update-only, sha256 concurrency, .bak backup, verify).
+* ping reports robots_llms_txt_writable and capability name.
 
 = 1.5.4 =
 * Add rootsandfruit/plugin-update-git-safe: flush Git Updater cache, nudge wp-cron, update-api, install with tag/override, smoke test, Breeze purge, rollback on failure.

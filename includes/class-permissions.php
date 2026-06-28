@@ -87,6 +87,13 @@ final class RF_Permissions {
 	/**
 	 * @param mixed $input Ability input.
 	 */
+	public static function can_update_robots_llms_txt( $input = null ): bool {
+		return current_user_can( RF_Capabilities::UPDATE_ROBOTS_LLMS_TXT );
+	}
+
+	/**
+	 * @param mixed $input Ability input.
+	 */
 	public static function can_purge_breeze_cache( $input = null ): bool {
 		if ( ! is_array( $input ) || ! isset( $input['post_id'] ) ) {
 			return current_user_can( 'edit_posts' );

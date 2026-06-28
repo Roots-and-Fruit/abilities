@@ -57,10 +57,12 @@ final class RF_Health_Module implements RF_Ability_Module {
 	 */
 	public static function ping( array $input = array() ): array {
 		return array(
-			'ok'               => true,
-			'plugin_version'   => RF_ABILITIES_VERSION,
-			'block_mcp_active' => RF_Block_Mcp::is_available(),
-			'breeze_active'    => RF_Breeze::is_available(),
+			'ok'                         => true,
+			'plugin_version'             => RF_ABILITIES_VERSION,
+			'block_mcp_active'           => RF_Block_Mcp::is_available(),
+			'breeze_active'              => RF_Breeze::is_available(),
+			'robots_llms_txt_writable'   => RF_Robots_Llms_Files::writes_enabled(),
+			'robots_llms_txt_capability' => RF_Capabilities::UPDATE_ROBOTS_LLMS_TXT,
 		);
 	}
 
