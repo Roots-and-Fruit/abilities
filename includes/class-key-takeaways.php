@@ -30,8 +30,9 @@ final class RF_Key_Takeaways {
 
 		$storage_method = 'meta_fallback';
 
-		if ( function_exists( 'lcf_set_olist_items' ) ) {
-			$result = lcf_set_olist_items( $post_id, self::META_KEY, $sanitized );
+		$lcf_setter = self::resolve_lcf_setter();
+		if ( null !== $lcf_setter ) {
+			$result = $lcf_setter( $post_id, self::META_KEY, $sanitized );
 			if ( false === $result ) {
 				return RF_Errors::invalid_input( 'LCF could not save key takeaways for this post.' );
 			}
@@ -60,7 +61,7 @@ final class RF_Key_Takeaways {
 			'items'           => $read_back,
 			'html_populated'  => '' !== $html,
 			'storage_method'  => $storage_method,
-			'lcf_available'   => function_exists( 'lcf_set_olist_items' ),
+			'lcf_available'   => null !== self::resolve_lcf_setter(),
 		);
 	}
 
@@ -146,5 +147,18 @@ final class RF_Key_Takeaways {
 		}
 
 		return array_values( $out );
+	}
+
+	/**
+	 * @return callable|null
+	 */
+	private static function resolve_lcf_setter() {
+		foreach ( array( 'lcf_set_olist_items', 'lcf_save_olist_items', 'lcf_update_olist_items' ) as $name ) {
+			if ( function_exists( $name ) ) {
+				return $name;
+			}
+		}
+
+		return null;
 	}
 }
