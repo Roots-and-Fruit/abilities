@@ -4,7 +4,7 @@ Tags: abilities, mcp, ai, agents, blocks
 Requires at least: 6.9
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,7 @@ Provides a consistent, least-privilege ability surface for Cursor agents via MCP
 * rootsandfruit/update-post
 * rootsandfruit/publish-post
 * rootsandfruit/set-post-author
+* rootsandfruit/set-key-takeaways
 
 When Block MCP (gk-block-mcp) is active:
 
@@ -115,6 +116,9 @@ Recommended custom role caps:
 5. Run audit-mcp-abilities.ps1 from the rootsandfruit-as-client repo
 
 == Changelog ==
+
+= 1.6.2 =
+* Add rootsandfruit/set-key-takeaways for LCF _rf_key_takeaways ordered-list repeater (1–12 items; sidebar HTML + JSON-LD).
 
 = 1.6.1 =
 * Fix plugin-update-git-safe: pass Git Updater override=1 when target_version/tag is set (release-asset deploys).

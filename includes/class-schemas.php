@@ -158,6 +158,52 @@ final class RF_Schemas {
 		);
 	}
 
+	public static function set_key_takeaways_input(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'post_id' => array(
+					'type'        => 'integer',
+					'description' => 'WordPress post ID.',
+					'minimum'     => 1,
+				),
+				'items'   => array(
+					'type'        => 'array',
+					'description' => 'Ordered takeaway strings (LCF repeater / _rf_key_takeaways).',
+					'minItems'    => 1,
+					'maxItems'    => 12,
+					'items'       => array(
+						'type'      => 'string',
+						'minLength' => 1,
+					),
+				),
+			),
+			'required'   => array( 'post_id', 'items' ),
+		);
+	}
+
+	public static function set_key_takeaways_output(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'post_id'        => array( 'type' => 'integer' ),
+				'meta_key'       => array( 'type' => 'string' ),
+				'count'          => array( 'type' => 'integer' ),
+				'items'          => array(
+					'type'  => 'array',
+					'items' => array( 'type' => 'string' ),
+				),
+				'html_populated' => array( 'type' => 'boolean' ),
+				'storage_method' => array(
+					'type'        => 'string',
+					'description' => 'lcf when LCF olist setter ran; meta_fallback otherwise.',
+				),
+				'lcf_available'  => array( 'type' => 'boolean' ),
+			),
+			'required'   => array( 'post_id', 'meta_key', 'count', 'items', 'html_populated', 'storage_method', 'lcf_available' ),
+		);
+	}
+
 	public static function purge_breeze_cache_input(): array {
 		return array(
 			'type'       => 'object',

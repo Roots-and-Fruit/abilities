@@ -93,6 +93,17 @@ final class RF_Content_Module implements RF_Ability_Module {
 				->mcp_public( true )
 				->annotations( RF_Annotations::write_safe() )
 				->build(),
+			RF_Ability_Definition::make( 'rootsandfruit/set-key-takeaways' )
+				->label( __( 'Set key takeaways', 'rootsandfruit-abilities' ) )
+				->description( __( 'Sets ordered key takeaway items on a post (_rf_key_takeaways LCF repeater). Use after blocks-create-page in the article pipeline.', 'rootsandfruit-abilities' ) )
+				->category( $this->category_slug() )
+				->input( RF_Schemas::set_key_takeaways_input() )
+				->output( RF_Schemas::set_key_takeaways_output() )
+				->execute( array( self::class, 'set_key_takeaways' ) )
+				->permission( array( RF_Permissions::class, 'can_edit_post' ) )
+				->mcp_public( true )
+				->annotations( RF_Annotations::write_safe() )
+				->build(),
 		);
 	}
 
@@ -307,6 +318,24 @@ final class RF_Content_Module implements RF_Ability_Module {
 		}
 
 		return $summary;
+	}
+
+	/**
+	 * @param array<string, mixed> $input
+	 * @return array<string, mixed>|WP_Error
+	 */
+	public static function set_key_takeaways( array $input ) {
+		$post_id = (int) $input['post_id'];
+		$post    = get_post( $post_id );
+		if ( ! $post instanceof WP_Post ) {
+			return RF_Errors::post_not_found( $post_id );
+		}
+
+		if ( ! isset( $input['items'] ) || ! is_array( $input['items'] ) ) {
+			return RF_Errors::invalid_input( 'items must be a non-empty array of strings.' );
+		}
+
+		return RF_Key_Takeaways::set_items( $post_id, $input['items'] );
 	}
 
 	/**

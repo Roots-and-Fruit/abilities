@@ -3,7 +3,7 @@
  * Plugin Name: Roots & Fruit Abilities
  * Plugin URI: https://github.com/Roots-and-Fruit/abilities
  * Description: Registers Roots & Fruit agent abilities for the WordPress Abilities API and MCP Adapter.
- * Version: 1.6.1
+ * Version: 1.6.2
  * Requires at least: 6.9
  * Requires PHP: 8.0
  * Author: Roots & Fruit
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RF_ABILITIES_VERSION', '1.6.1' );
+define( 'RF_ABILITIES_VERSION', '1.6.2' );
 define( 'RF_ABILITIES_FILE', __FILE__ );
 define( 'RF_ABILITIES_PATH', plugin_dir_path( __FILE__ ) );
 define( 'RF_ABILITIES_URL', plugin_dir_url( __FILE__ ) );
@@ -45,6 +45,7 @@ require_once RF_ABILITIES_PATH . 'includes/class-git-updater.php';
 require_once RF_ABILITIES_PATH . 'includes/class-plugin-update-safe.php';
 require_once RF_ABILITIES_PATH . 'includes/class-plugin-update-git-safe.php';
 require_once RF_ABILITIES_PATH . 'includes/class-robots-llms-files.php';
+require_once RF_ABILITIES_PATH . 'includes/class-key-takeaways.php';
 require_once RF_ABILITIES_PATH . 'includes/class-plugin.php';
 require_once RF_ABILITIES_PATH . 'includes/abilities/class-health-module.php';
 require_once RF_ABILITIES_PATH . 'includes/abilities/class-preview-module.php';
